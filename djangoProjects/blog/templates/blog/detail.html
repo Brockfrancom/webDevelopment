@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+     <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+     <title>Blog {{post.title}}</title>
+  </head>
+  <body>
+     <h1>Viewing blog "{{post.title}}"</h1>
+     <h2>The date and time is {{time}}</h2>
+     <a href="{% url 'blog:index' %}">Blog Home Page</a>
+     <a href="{% url 'blog:bio' %}">Bio/About Me</a>
+     <a href="{% url 'blog:tech' %}">Tech Tips</a>
+     <a href="{% url 'blog:blogArchive' %}">Blog Archive</a>
+     <h1>Blog "{{ post.title }}"</h1>
+     <div>{{post.author}} posted:</div>
+     <p>{{ post.content }}</p>
+     <div>Date posted: {{post.posted_date}}</div>
+     <h3>Comments:</h3>
+    {% if post.comments %}
+        <ul>
+        {% for comment in post.comments %}
+            <div id="comment">
+            <div>{{comment.author_nickname}} posted:</div>
+            <p>{{comment.content|truncatewords:200}}</p>
+            <pre>Date posted: {{comment.posted_date}}</pre>
+            <div>Email: {{comment.email}}</div>
+            </div>    
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No comments available.</p>
+    {% endif %}
+    <div id="commentForm">
+    <form action="{% url 'blog:comments' post.id %}" method="post">
+      {% csrf_token %}
+      <h3>Post your comment here!</h3>
+      <div class="commentElement">Nickname: <input name="author_nickname" type="textbox"></div>
+      <div class="commentElement">Email: <input name="email" type="textbox"></div>
+      <div class="commentElement">Comment: <textarea name="content" rows="10" cols="100"></textarea></div>
+      <input class="commentElement" type="submit" value="Comment">
+    </form>
+    </div>    
+  </body
+</html>

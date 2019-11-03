@@ -1,0 +1,59 @@
+.forecast_item {
+    text-shadow: 1px 1px 2px black;
+    color:       black;
+    font-family: 'helvetica neue', helvetica, sans-serif;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 3px 10px;
+    margin: 10px;
+    border-radius: 10px;
+    border-width: 2px;
+    border-style: solid;
+    display: inline-block;
+    background-color: rgba(112,128,144,0.1);
+}
+
+.forecast_item1 {
+    text-shadow: 1px 1px 2px black;
+    color:       green;
+    font-family: 'helvetica neue', helvetica, sans-serif;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 3px 10px;
+    margin: 10px;
+    border-radius: 10px;
+    border-width: 2px;
+    border-style: solid;
+    display: inline-block;
+    background-color: rgba(112,128,144,0.1);
+}
+
+.forecast_item2 {
+    text-shadow: 1px 1px 2px black;
+    color:       red;
+    font-family: 'helvetica neue', helvetica, sans-serif;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 3px 10px;
+    margin: 10px;
+    border-radius: 10px;
+    border-width: 2px;
+    border-style: solid;
+    display: inline-block;
+    background-color: rgba(112,128,144,0.1);
+}
+
+.current_item {
+    text-shadow: 1px 1px 2px black;
+    color:       black;
+    font-family: 'helvetica neue', helvetica, sans-serif;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 3px 10px;
+    margin: 10px;
+    border-radius: 10px;
+    border-width: 2px;
+    border-style: solid;
+    display: inline-block;
+    background-color: rgba(112,128,144,0.3);
+}

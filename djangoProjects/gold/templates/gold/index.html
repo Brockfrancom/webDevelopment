@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+     <script>
+        // Construct the current and past times
+        var currentTime = new Date();
+        var past = new Date();
+        var pastTime = new Date(past.setDate(past.getDate()-5));
+	
+        var startFormattedTime = (pastTime.getFullYear()).toString() + "-" + (pastTime.getMonth()+1).toString() + "-" + (pastTime.getDate()).toString();
+        var endFormattedTime = (currentTime.getFullYear()).toString() + "-" + (currentTime.getMonth()+1).toString() + "-" + (currentTime.getDate()).toString();
+
+        // Get quandle.com data 
+        var quandleJSON;
+        quandleURL = 'https://www.quandl.com/api/v3/datasets/LBMA/GOLD.json?api_key=NrPVfyRrAeCM8_znqi2b&icolumn_index=2&start_date=' + startFormattedTime + '&end_date=' + endFormattedTime;
+
+        fetch(quandleURL)
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(myJson) {
+            quandleJSON = myJson;
+          });
+        
+        // Make sure the input is valid, and send it to the database
+        // Database converts the weight to t_oz and returns json
+        // Display the quandle value * the converted weight
+        function convert() {
+
+           value = document.getElementById('weightValue').value;
+           value = Number(value);
+           // Make sure the input is valid
+           if(isNaN(value)){
+               document.getElementById('response').innerHTML = "Please input a valid weight.";
+               return;
+           }
+
+           // Query database
+           convertURL = 'http://' + location.hostname + ':8000/unitconv/convert?from=lbs&to=t_oz&value='+value;
+           var convertJSON;
+           fetch(convertURL)
+             .then(function(response) {
+               return response.json();
+             })
+             .then(function(json) {
+               convertJSON = json;
+               // Display value
+               quandleValue = quandleJSON.dataset.data[0][1];
+               convertedValue = (convertJSON.value) * quandleValue;
+               document.getElementById('response').innerHTML = "You are worth $" + convertedValue + "!";
+             });
+           document.getElementById('response').innerHTML = "Converting....";
+
+        }
+     </script>
+     <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+     <title>Your weight in gold</title>
+  </head>
+  <body>
+     <h1>What is your worth in gold??</h1>
+     <h2>Input your weight in pounds and your worth in gold will be displayed!</h2>
+     
+     <div id="commentForm">
+       <h3>Enter your weight here (lbs):</h3>
+       <div class="commentElement">Weight: <input id="weightValue" type="textbox"></div>
+       <button class="commentElement" type="submit" onClick="convert()">Submit</button>
+       <p id="response">Enter your weight above and your worth will be shown here!</p>
+     </div>    
+  </body>
+</html>

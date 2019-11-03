@@ -1,0 +1,18 @@
+
+table, td {border: 1px solid #333;}
+
+thead {
+    background-color: #333;
+    color: #fff;}
+
+p.secondthird {font-style: italic;
+	       text-align: right;}
+
+#smallimg {vertical-align: super;
+	   margin: 5px;
+	   padding: 10 px;}
+
+p {border: 5px solid black;}
+
+#first {background-color: rgb(0,200,0);
+	       font-family: verdana;}

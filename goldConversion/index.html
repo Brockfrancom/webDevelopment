@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<link rel="stylesheet" href="style.css" type="text/css"/>
+<script>
+    // Global variables
+    var ipstackAccess_key = '3ae2bcbc534623715ab54eab0fbaa0f9';
+    var locationURL = 'http://api.ipstack.com/check?access_key=' + ipstackAccess_key;
+    
+    var weatherAPI_key = '13676c6aefabbc99e4859a703b5b0eed';
+    var currentWeatherJSON;
+    var forecastWeatherJSON;
+
+    fetch(locationURL)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        latitude = myJson.latitude;
+        longitude = myJson.longitude;
+        zipCode = myJson.zip;
+        //Get current weather
+        var currentWeatherURL = 'http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&appid=' + weatherAPI_key + '&units=imperial';
+        fetch(currentWeatherURL)
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(myJson) {
+            currentWeatherJSON = myJson;
+            loadCurrent();
+          });
+        // Get forecast weather    
+        var forecastWeatherURL = 'http://api.openweathermap.org/data/2.5/forecast?zip=' + zipCode + '&appid=' + weatherAPI_key + '&units=imperial';
+        fetch(forecastWeatherURL)
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(myJson) {
+            forecastWeatherJSON = myJson;
+            loadForecast();
+          });
+      });
+</script>
+</head>
+<body>
+    <h2 id="load">Loading, please wait...</h2>
+</body>
+<script>
+    var numDefault= 0;
+    var numLikely = 0;
+    var numUnlikely = 0;
+
+    function loadCurrent() {
+        var div7 = document.createElement('div');
+        div7.setAttribute('class', 'current_item');
+        div7.setAttribute('id', 'currentWeather');
+        document.querySelector('body').appendChild(div7); 
+        var div17 = document.createElement('div');
+        div17.innerHTML = '<h3>Current Weather</h3>';
+        div7.appendChild(div17); 
+        var div27 = document.createElement('div');
+        div27.innerHTML = 'Updated: {{datetime}}';
+        div7.appendChild(div27); 
+        var div37 = document.createElement('div');
+        div37.innerHTML = 'Temperature(F): {{temperature}} F';
+        div7.appendChild(div37); 
+        var div47 = document.createElement('div');
+        div47.innerHTML = 'Weather/Sky Conditions: {{sky}}';
+        div7.appendChild(div47); 
+        var div57 = document.createElement('div');
+        div57.innerHTML = 'Humidity: {{humidity}}%';
+        div7.appendChild(div57); 
+        var div67 = document.createElement('div');
+        div67.innerHTML = 'Pressure(hPa): {{pressure}} hPa';
+        div7.appendChild(div67); 
+
+        document.getElementById('load').remove();
+
+        var countdiv = document.createElement('div');
+        countdiv.setAttribute('class', 'counters');
+        countdiv.setAttribute('id', 'counters');
+        countdiv.setAttribute('style', 'text-align:center');
+        countdiv.innerHTML = '<h3>Defaut: 0 Likely: 0 Unlikely: 0</h3>';
+        document.querySelector('body').appendChild(countdiv); 
+        
+        var currentWeather = new Vue({
+            el: '#currentWeather',
+            data: {
+                humidity: window.currentWeatherJSON.main.humidity,
+                temperature: window.currentWeatherJSON.main.temp,
+                pressure: window.currentWeatherJSON.main.pressure,
+                sky: window.currentWeatherJSON.weather[0].main,
+                datetime: (new Date(window.currentWeatherJSON.dt * 1000)).toLocaleString(),
+            },
+            });
+    }
+    function loadForecast() {
+
+        for (var i=0;i<forecastWeatherJSON.list.length;i++){
+            var div = document.createElement('div');
+            div.setAttribute('class', 'forecast_item');
+            div.setAttribute('id', 'forecastWeather' +i);
+            div.setAttribute('v-on:click', 'colorChange');
+            document.querySelector('body').appendChild(div); 
+            var div1 = document.createElement('div');
+            div1.innerHTML = '<h3>Forecast Weather</h3>';
+            div.appendChild(div1); 
+            var div2 = document.createElement('div');
+            div2.innerHTML = 'Updated: {{datetime}}';
+            div.appendChild(div2); 
+            var div3 = document.createElement('div');
+            div3.innerHTML = 'Temperature(F): {{temperature}} F';
+            div.appendChild(div3); 
+            var div4 = document.createElement('div');
+            div4.innerHTML = 'Weather/Sky Conditions: {{sky}}';
+            div.appendChild(div4); 
+            var div5 = document.createElement('div');
+            div5.innerHTML = 'Humidity: {{humidity}}%';
+            div.appendChild(div5); 
+            var div6 = document.createElement('div');
+            div6.innerHTML = 'Pressure(hPa): {{pressure}} hPa';
+            div.appendChild(div6); 
+        }
+        numDefault = forecastWeatherJSON.list.length;
+        for (var i=0;i<forecastWeatherJSON.list.length;i++){
+            var forecastWeather = new Vue({
+                el: '#forecastWeather'+i,
+                data: {
+                    humidity: forecastWeatherJSON.list[i].main.humidity,
+                    temperature: forecastWeatherJSON.list[i].main.temp,
+                    pressure: forecastWeatherJSON.list[i].main.pressure,
+                    sky: forecastWeatherJSON.list[i].weather[0].main,
+                    datetime: (new Date(forecastWeatherJSON.list[i].dt * 1000)).toLocaleString(),
+                    state: 0,
+                    },
+                methods: {
+                    colorChange: function() {
+                    if(this.state == 0){
+                        this.state = 1;
+                        this.$el.setAttribute('class', 'forecast_item1');
+                        numDefault -=1;
+                        numLikely += 1;
+                    }
+                    else if(this.state == 1) {
+                        this.state = 2;
+                        this.$el.setAttribute('class', 'forecast_item2');
+                        numLikely -= 1;
+                        numUnlikely += 1;
+                        }
+                    else{
+                        this.state = 0;
+                        this.$el.setAttribute('class', 'forecast_item');
+                        numUnlikely -= 1;
+                        numDefault += 1;
+                        }
+                        count();
+                    }
+                }
+                })
+                }
+                count();
+        }
+    function count() {
+    document.getElementById('counters').innerHTML = '<h3> Defaut: ' + numDefault + ' Likely: ' + numLikely + ' Unlikely: ' + numUnlikely + '</h3>';
+            }
+</script>
+<html>

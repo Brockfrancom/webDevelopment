@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<title>Tech Tips</title>
+        <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+    </head>	
+    <body>	
+	<h1>Tech Tips</h1>
+        <h2>The date and time is {{time}}</h2>
+    	<a href="{% url 'blog:index' %}">Blog Home Page</a>
+    	<a href="{% url 'blog:bio' %}">Bio/About Me</a>
+    	<a href="{% url 'blog:tech' %}">Tech Tips</a>
+    	<a href="{% url 'blog:blogArchive' %}">Blog Archive</a>
+	<h2>Git Stuff</h2>
+	<table>
+	    <thead>
+	        <tr>
+	            <th colspan="3">Git Commands</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <tr>
+	            <td>Command Name</td>
+	            <td>Discription</td>
+		    <td>Example of command line</td>
+	        </tr>
+	        <tr>
+	            <td>git init</td>
+	            <td>Initalizes a new repository</td>
+		    <td><code>git init cs2610</code></td>
+	        </tr>
+	        <tr>
+	            <td>git status</td>
+	            <td>Displays the status of the git repository</td>
+		    <td><code>git status</code></td>
+	        </tr>
+	    </tbody>
+	</table>
+    </body>
+</html>
